@@ -39,7 +39,7 @@ main {
 }
 
 .card-title {
-    font-size: 1.8vw;
+    font-size: 1.5vw;
     font-weight: 600;
 
     margin-bottom: 0.5vw;
@@ -47,9 +47,9 @@ main {
     color: var(--text-color);
 }
 
-.chart {
+.charts {
     width: 30vw;
-    height: 30vw;
+    height: 40vw;
 
     background-color: var(--card-background);
 
@@ -107,9 +107,6 @@ main {
     border: none;
     border-bottom: var(--primary-color) solid 2px;
 }
-.transaction-amount::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-}
 .transaction-amount:focus {
     outline: none;
     color: #000000;
@@ -159,7 +156,7 @@ main {
 
 .transactions-history {
     width: 30vw;
-    height: auto;
+    max-height: 100%;
 
     background-color: var(--card-background);
 
@@ -167,4 +164,53 @@ main {
     border-radius: 8px;
     box-shadow: 10px 4px 6px var(--shadow-color);
     margin: 0.5rem 0;
+
+    overflow-y: hidden;
+    overflow-x: auto;
+}
+
+.transactions-history table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background-color: var(--card-background);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.transactions-history th {
+    background-color: var(--primary-color);
+    color: var(--card-background);
+    padding: 1rem;
+    font-size: 1.2rem;
+    text-align: left;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.transactions-history td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 1rem;
+}
+
+.transactions-history td.description {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+.transactions-history td.income {
+    color: green;
+}
+
+.transactions-history td.outcome {
+    color: red;
+}
+
+.transactions-history tr:nth-child(even) {
+    background-color: var(--background);
+}
+
+.transactions-history thead {
+    background-color: var(--primary-color);
 }

@@ -13,6 +13,10 @@
 
     <!-- Styles -->
     @vite(['resources/css/app.css', 'resources/css/custom.css'])
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
 <body>
@@ -22,7 +26,9 @@
 
     <main>
 
-        <div class="chart">
+        <div class="charts">
+            <p class="card-title">Totals after each transaction</p>
+            <canvas id="lineChart"></canvas>
         </div>
 
         <div class="right-column">
@@ -34,7 +40,7 @@
 
                     <input type="text" class="transaction-description" name="transaction-description" placeholder="Descrizione" request>
 
-                    <input type="number" class="transaction-amount" name="transaction-amount" placeholder="Import" request>
+                    <input type="text" class="transaction-amount" name="transaction-amount" placeholder="Import" request>
                     <select class="transaction-type" name="transaction-type" id="transaction-type" request>
                         <option disabled selected value> Transaction type </option>
                         <option value="income">Income</option>
@@ -46,10 +52,83 @@
             </div>
 
             <div class="transactions-history">
+                <p class="card-title">Transactions history</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($transactions->reverse()->take(6) as $transaction)
+                        <tr>
+                            <td class="description">{{ $transaction->description }}</td>
+                            <td class="{{ $transaction->type == 'income' ? 'income' : 'outcome' }}">{{ $transaction->type == 'income' ? '+ ' . number_format($transaction->amount, 2) : '- ' . number_format($transaction->amount, 2) }}</td>
+                            <td>{{ $transaction->date }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
 
     </main>
+
+    <script>
+        const data = {
+            labels: @json($labels),
+            datasets: [{
+                label: 'Total Amount',
+                data: @json($amounts),
+                fill: false,
+                borderColor: '#007bff',
+                tension: 0.1
+            }]
+        };
+
+        const config = {
+            type: 'line',
+            data: data,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return `${tooltipItem.dataset.label}: $${tooltipItem.raw}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Transaction id'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Total Amount'
+                        }
+                    }
+                }
+            }
+        };
+
+        // Inizializza il grafico
+        const lineChart = new Chart(
+            document.getElementById('lineChart'),
+            config
+        );
+    </script>
 
 </body>
 

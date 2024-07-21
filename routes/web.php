@@ -8,3 +8,4 @@ Route::get('/', function () {
 });
 
 Route::post('/', [TransactionController::class, 'store'])->name('transactions.store');
+Route::get('/', [TransactionController::class, 'index'])->name('transactions.index');

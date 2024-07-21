@@ -14,7 +14,22 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        //
+        $transactions = Transaction::all()->sortBy('created_at');
+
+        $accumulatedTotals = $labels = [];
+        $total = 0;
+
+        foreach ($transactions as $transaction) {
+            $transaction['type'] == 'income' ? $total += $transaction->amount : $total -= $transaction->amount;
+            $accumulatedTotals[] = $total;
+            $labels[] = $transaction['id'];
+        }
+    
+        return view('welcome', [
+            'transactions' => $transactions,
+            'labels' => $labels,
+            'amounts' => $accumulatedTotals
+        ]);
     }
 
     /**
@@ -30,6 +45,14 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
+        $request['transaction-amount'] = (float)str_replace(',', '.', $request['transaction-amount']);
+
+        $validatedData = $request->validate([
+            'transaction-description' => 'required|string|max:255',
+            'transaction-amount' => 'required|numeric',
+            'transaction-type' => 'required|in:income,outcome',
+        ]);
+
         DB::beginTransaction();
 
         try {
@@ -43,7 +66,6 @@ class TransactionController extends Controller
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ]);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['error' => $e->getMessage()], 500);
