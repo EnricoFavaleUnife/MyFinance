@@ -29,6 +29,8 @@
         <div class="charts">
             <p class="card-title">Totals after each transaction</p>
             <canvas id="lineChart"></canvas>
+
+            <p class="card-title">Totals day by day</p>
         </div>
 
         <div class="right-column">
