@@ -28,17 +28,20 @@
         <div class="right-column">
             <div class="add-transaction-form">
                 <p class="card-title">Add transaction</p>
-                <form action="">
-                    <input type="text" class="transaction-description" name="transaction-description" placeholder="Descrizione">
+                <form action="{{ route('transactions.store') }}" method="POST">
 
-                    <input type="number" class="transaction-amount" name="transaction-amount" placeholder="Import">
-                    <select class="transaction-type" name="transaction-type" id="transaction-type">
+                    @csrf
+
+                    <input type="text" class="transaction-description" name="transaction-description" placeholder="Descrizione" request>
+
+                    <input type="number" class="transaction-amount" name="transaction-amount" placeholder="Import" request>
+                    <select class="transaction-type" name="transaction-type" id="transaction-type" request>
                         <option disabled selected value> Transaction type </option>
                         <option value="income">Income</option>
                         <option value="outcome">Outcome</option>
                     </select>
 
-                    <button>Add transaction</button>
+                    <button class="submit-transaction-button">Add transaction</button>
                 </form>
             </div>
 
