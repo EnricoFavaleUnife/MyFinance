@@ -27,7 +27,7 @@
     <main>
 
         <div class="charts">
-            <p class="card-title">Actual total: {{ end($amounts) }} $</p>
+            <p class="card-title">Actual total: <span class="{{ end($amounts) >= 0 ? 'positive-value' : 'negative-value' }}" > {{ end($amounts) }} $</span></p>
 
             <div class="separation-line"></div>
 

@@ -215,8 +215,15 @@ main {
     background-color: var(--primary-color);
 }
 
+.positive-value {
+    color: green;
+}
+
+.negative-value {
+    color: red;
+}
+
 .separation-line {
     border: 1px solid var(--primary-color);
-
     margin-bottom: 1rem;
 }
