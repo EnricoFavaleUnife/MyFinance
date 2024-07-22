@@ -214,3 +214,9 @@ main {
 .transactions-history thead {
     background-color: var(--primary-color);
 }
+
+.separation-line {
+    border: 1px solid var(--primary-color);
+
+    margin-bottom: 1rem;
+}

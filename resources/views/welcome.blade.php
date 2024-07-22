@@ -27,10 +27,15 @@
     <main>
 
         <div class="charts">
+            <p class="card-title">Actual total: {{ end($amounts) }} $</p>
+
+            <div class="separation-line"></div>
+
             <p class="card-title">Totals after each transaction</p>
             <canvas id="lineChart"></canvas>
 
             <p class="card-title">Totals day by day</p>
+            <canvas id="barChart"></canvas>
         </div>
 
         <div class="right-column">
@@ -68,7 +73,7 @@
                         @foreach ($transactions->reverse()->take(6) as $transaction)
                         <tr>
                             <td class="description">{{ $transaction->description }}</td>
-                            <td class="{{ $transaction->type == 'income' ? 'income' : 'outcome' }}">{{ $transaction->type == 'income' ? '+ ' . number_format($transaction->amount, 2) : '- ' . number_format($transaction->amount, 2) }}</td>
+                            <td class="{{ $transaction->type == 'income' ? 'income' : 'outcome' }}">{{ $transaction->type == 'income' ? '+ ' . number_format($transaction->amount, 2) . ' $' : '- ' . number_format($transaction->amount, 2) . ' $' }}</td>
                             <td>{{ $transaction->date }}</td>
                         </tr>
                         @endforeach
@@ -80,8 +85,8 @@
     </main>
 
     <script>
-        const data = {
-            labels: @json($labels),
+        const dataLine = {
+            labels: @json($labelsLineChart),
             datasets: [{
                 label: 'Total Amount',
                 data: @json($amounts),
@@ -91,9 +96,9 @@
             }]
         };
 
-        const config = {
+        const configLine = {
             type: 'line',
-            data: data,
+            data: dataLine,
             options: {
                 responsive: true,
                 plugins: {
@@ -125,10 +130,62 @@
             }
         };
 
-        // Inizializza il grafico
+        // Inizializza il grafico Line
         const lineChart = new Chart(
             document.getElementById('lineChart'),
-            config
+            configLine
+        );
+
+        const barData = {
+            labels: @json($labelsBarChart),
+            datasets: [{
+                label: 'Daily Total',
+                data: @json($totals),
+                backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                borderColor: 'rgba(0, 123, 255, 1)',
+                borderWidth: 1
+            }]
+        };
+
+        const barConfig = {
+            type: 'bar',
+            data: barData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false, // Rimuove completamente la legenda
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return `Total: $${tooltipItem.raw}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Daily Total'
+                        },
+                        beginAtZero: true
+                    }
+                }
+            }
+        };
+
+        // Inizializza il BarChart
+        const barChart = new Chart(
+            document.getElementById('barChart'),
+            barConfig
         );
     </script>
 

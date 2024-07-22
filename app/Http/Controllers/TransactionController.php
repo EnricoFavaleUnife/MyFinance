@@ -16,19 +16,40 @@ class TransactionController extends Controller
     {
         $transactions = Transaction::all()->sortBy('created_at');
 
-        $accumulatedTotals = $labels = [];
+        
+
+        $accumulatedTotals = $labelsLineChart = [];
         $total = 0;
 
         foreach ($transactions as $transaction) {
+            
+            // Data for LineChart
+            
             $transaction['type'] == 'income' ? $total += $transaction->amount : $total -= $transaction->amount;
             $accumulatedTotals[] = $total;
-            $labels[] = $transaction['id'];
+            $labelsLineChart[] = $transaction['id'];
         }
-    
+
+        
+
+        $dailyTotals = $transactions->groupBy('date')->map( function ($dailyTransactions) {
+
+            $dailyTotal = 0;
+
+            foreach ($dailyTransactions as $dailyTransaction) {
+                $dailyTransaction['type'] == 'income' ? $dailyTotal += $dailyTransaction->amount : $dailyTotal -= $dailyTransaction->amount;
+            }
+
+            return $dailyTotal;
+        });
+
         return view('welcome', [
             'transactions' => $transactions,
-            'labels' => $labels,
-            'amounts' => $accumulatedTotals
+            'labelsLineChart' => $labelsLineChart,
+            'amounts' => $accumulatedTotals,
+
+            'labelsBarChart' => $dailyTotals->keys(),
+            'totals' => $dailyTotals->values(),
         ]);
     }
 
